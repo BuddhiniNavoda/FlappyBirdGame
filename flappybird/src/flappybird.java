@@ -10,6 +10,7 @@ public class flappybird extends JPanel implements ActionListener, KeyListener {
     int boardWidth =360;
     int boardHeight=640;
 
+    
     // Images: 4 variables are to store our image 
     Image backgroundImg;
     Image birdImg;
