@@ -17,6 +17,7 @@ public class App {
         flappybird flappybird = new flappybird();
         frame.add (flappybird);
         frame.pack();
+        flappybird.requestFocus();
         frame.setVisible(true); // so only we've added the jpannel to our frame we will set the visibility is true
     }
 }
