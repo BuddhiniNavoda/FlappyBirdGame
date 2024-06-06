@@ -12,7 +12,6 @@ public class App {
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        /////
         
         flappybird flappybird = new flappybird();
         frame.add (flappybird);
