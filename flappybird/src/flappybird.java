@@ -36,7 +36,25 @@ public class flappybird extends JPanel implements ActionListener, KeyListener {
 
 
     }
+    // pipes (add variables : X position, y position,pipes height,pipes weight)
+    int pipeX = boardWidth; // the pipes going to be on the right side of the screen
+    int pipeY = 0; // the pipes going to start from the top of screen
+     int pipeWidth = 50;
+    int pipeHeight =700;
+     
+    class pipe {
+        int x = pipeX;
+        int y = pipeY;
+        int width = pipeWidth;
+        int height = pipeHeight;
+        Image img;
+        boolean passed = false;
+    }
 
+    Pipe (Image img){
+        this.img = img;
+    }
+     
     //game logic
     Bird bird;
     int velocityY=0;    // flapp bird  moving direction(upword=-y,downword=+y,forword=+x,backword=-x)
