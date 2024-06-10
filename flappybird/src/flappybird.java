@@ -1,6 +1,7 @@
 
 import java.awt.*;
 import java.awt.event.*;
+import java.nio.channels.Pipe;
 import java.util.ArrayList;  // to place the all the pipes
 import java.util.Random; // to place the pipes in random position
 import javax.swing.*;
@@ -39,7 +40,7 @@ public class flappybird extends JPanel implements ActionListener, KeyListener {
     // pipes (add variables : X position, y position,pipes height,pipes weight)
     int pipeX = boardWidth; // the pipes going to be on the right side of the screen
     int pipeY = 0; // the pipes going to start from the top of screen
-     int pipeWidth = 50;
+     int pipeWidth = 30;
     int pipeHeight =700;
      
     class pipe {
@@ -49,14 +50,16 @@ public class flappybird extends JPanel implements ActionListener, KeyListener {
         int height = pipeHeight;
         Image img;
         boolean passed = false;
-    }
+    
 
     Pipe (Image img){
         this.img = img;
     }
+}
      
     //game logic
     Bird bird;
+    int velocityX = -4; // move pipes to the left speed (simulates bird moving right) also pipes move to the left so change the X position by -4 pixels every frame
     int velocityY=0;    // flapp bird  moving direction(upword=-y,downword=+y,forword=+x,backword=-x)
                         // flappy bird doesn't move forword or backfor it only upword and downword
                         // when int velocity = 9: the first frame move up 9 pixel and the the next frame move up 9 pixel upword so this is going to 9 pixel upwords
@@ -67,8 +70,9 @@ public class flappybird extends JPanel implements ActionListener, KeyListener {
     //  when apply gravity to velocity  -6 (upword velocity)+1(downward gravity) = -5 velocity and then when apply gravity to  next frame -5+1=-4 then next frame when apply gravity -4+1 =-3, then -3+1=-2,-2+1=1,+1-1=0(this point the bird stops going upwords)
     // Then the next fram 0+1=+1(this fram bird starts to descend) next fram have 2 and then 3 and 4
     
+    ArrayList< Pipe> pipes; // we have many pipes in our game. we need to store them in a list
     Timer gameLoop;
-
+    Timer placePipesTimer;
 
     flappybird(){
         setPreferredSize(new Dimension(boardWidth,boardHeight));
@@ -84,6 +88,18 @@ public class flappybird extends JPanel implements ActionListener, KeyListener {
     
         //bird
         bird = new Bird(birdImg);
+        pipes = new ArrayList<Pipe>();
+
+        // place pipes timer
+        // 1500/1000=1.5 every 1.5 seconds call to an action
+        placePipesTimer= new Timer(1500,new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                placePipes();
+            }
+        });
+
+        placePipesTimer.start();
 
         //game timer
         gameLoop = new Timer(1000/60 ,this); // game loop is equal to new timer and need to specify how often shold repeat the action 
@@ -92,7 +108,11 @@ public class flappybird extends JPanel implements ActionListener, KeyListener {
         gameLoop.start();
     
     }
-
+    // place new pipes
+    public void placePipes(){
+        Pipe topPipe = new Pipe (topPipeImg);
+        pipes.add(topPipeImg);
+    }
     public void paintComponent(Graphics g){
 
         super.paintComponent(g);
@@ -111,22 +131,25 @@ public class flappybird extends JPanel implements ActionListener, KeyListener {
         //bird
         g.drawImage(bird.img,bird.x,bird.y ,bird.width,bird.height,null);
     
+        // pipes (draw the pipes)
+        for(int i =0 ; i< pipes.size(); i++){
+            Pipe pipe = pipes.get(i);
+            g.drawImage(pipe.img, pipe.x, pipe.y, pipeWidth,pipeHeight,null);
+        }
     }
 
     // update all the X and Y positions of objects
     public void move(){
         //bird
         velocityY += gravity; 
-
-
-
-
-
-
         bird.y += velocityY;
-
         bird.y =Math.max(bird.y, 0);  // bird is not allowed to move past the top part of screen(0 is the very top of the screen)
-
+         
+        // pipes (move the pipes)
+        for (int i=0; i< pipes.size();i++){
+            Pipe pipe = pipes.get(i);
+            pipe.x += velocityX; // velocity x = -4 , every time move each pipe over by -4 to the left 
+        }
     }
 
     @Override
